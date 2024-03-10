@@ -2,15 +2,20 @@
   "name": "mongoledb",
   "version": "1.0.0",
   "description": "Projet LE4 IG2I",
-  "main": "index.mjs",
+  "main": "index.js",
   "scripts": {
-    "start": "node index.mjs",
+    "start": "node ./src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.5",
-    "mongodb": "^6.4.0"
+    "mongodb": "^6.4.0",
+    "mongoose": "^8.2.1",
+    "real-random-address": "^1.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
   }
 }
