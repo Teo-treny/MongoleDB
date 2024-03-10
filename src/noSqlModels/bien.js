@@ -1,45 +1,42 @@
 const database = require('../services/database.service');
+const Question = require('./question');
+const Reservation = require('./reservation');
+const Calendrier = require('./calendrier');
+const fakerator = require('fakerator');
 
 const bienSchema = new database.Schema({
-    idBien: { type: database.Schema.Types.ObjectId, required: true },
     adresseBien: { type: String },
     cpBien: { type: String },
     villeBien: { type: String },
     typeLocation: { type: String },
     tarifBase: { type: Number },
     questions: {
-        type: [{
-            idQuestion: { type: database.Schema.Types.ObjectId, required: true },
-            idAuteur: { type: database.Schema.Types.ObjectId, required: true },
-            idBien: { type: database.Schema.Types.ObjectId, required: true },
-            idSource: { type: database.Schema.Types.ObjectId, required: true },
-            texte: { type: String }
-        }]
+        type: [Question.QuestionModel.questionSchema]
     },
     reservations: {
-        type: [{
-            idReservation: { type: database.Schema.Types.ObjectId, required: true },
-            idBien: { type: database.Schema.Types.ObjectId, required: true },
-            idTiers: { type: database.Schema.Types.ObjectId, required: true },
-            dateDebut: { type: Date },
-            dateFin: { type: Date },
-            tarifQuotion: { type: Number },
-            montantTotal: { type: Number },
-            dateReservation: { type: Date },
-            dateReglement: { type: Date },
-            etat: { type: String },
-            commentaire: { type: String },
-            reponseCommentaire: { type: String }
-        }]
+        type: [Reservation.ReservationModel.reservationSchema]
     },
     calendriers: {
-        type: [{
-            date: { type: Date },
-            idBien: { type: database.Schema.Types.ObjectId, required: true },
-            tarifJournalier: { type: Number },
-            etat: { type: Number }
-        }]
+        type: [Calendrier.CalendrierModel.calendrierSchema]
     }
 });
 
-module.exports = database.model('Bien', bienSchema);
+BienModel = database.model('Bien', bienSchema);
+
+function createRandomBien() {
+
+    let bien = new BienModel({
+        adresseBien: fakerator().address.street(),
+        cpBien: fakerator().address.postCode(),
+        villeBien: fakerator().address.city(),
+        typeLocation: fakerator().random.boolean() ? "Location" : "Vente",
+        tarifBase: fakerator().random.number(1000, 10000),
+    });
+    bien.questions.push(Question.createRandomQuestion());
+    bien.reservations.push(Reservation.createRandomReservation());
+    bien.calendriers.push(Calendrier.createRandomCalendrier());
+    return bien;
+}
+
+// Export the model
+module.exports = {BienModel, createRandomBien};

@@ -8,9 +8,9 @@ const Tiers = require('../noSqlModels/tiers');
 function createTestSetNoSql(iteration) {
     console.log("Creating test set of " + iteration + " documents");
 
-    for(i=0 ; i<iteration ; i++) {
+    let bien = Bien.createRandomBien();
+    bien.save();
 
-    }
 }
 
 module.exports = createTestSetNoSql;

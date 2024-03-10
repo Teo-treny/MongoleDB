@@ -11,11 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.5",
+    "faker": "^6.6.6",
+    "fakerator": "^0.3.6",
     "mongodb": "^6.4.0",
-    "mongoose": "^8.2.1",
-    "real-random-address": "^1.1.0"
-  },
-  "devDependencies": {
-    "typescript": "^5.3.3"
+    "mongoose": "^8.2.1"
   }
 }
