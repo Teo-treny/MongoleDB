@@ -42,5 +42,4 @@ const bienSchema = new database.Schema({
     }
 });
 
-// Export the model and the function
 module.exports = database.model('Bien', bienSchema);

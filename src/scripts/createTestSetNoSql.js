@@ -1,9 +1,8 @@
 const Bien = require('../noSqlModels/bien');
-const createRandomBien = require('../noSqlModels/bien');
 const Tiers = require('../noSqlModels/tiers');
 
 /**
- * Create <iteration> documents in the DB
+ * Create <iteration> documents in the NoSqlDB
  * @param {number} iteration 
  */
 function createTestSetNoSql(iteration) {
