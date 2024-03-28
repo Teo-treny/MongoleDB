@@ -111,6 +111,22 @@ function createRandomBien(questionAmount, questionDepth) {
         randomBien.questions.push(element);
     });
 
+    // Add reservations
+    for (let i = 0; i < fakerator.random.number(1, 10); i++) {
+        switch(fakerator.random.number(0, 2)) {
+            case 0:
+                etat = "Terminee";
+                break;
+            case 1:
+                etat = "En cours";
+                break;
+            case 2:
+                etat = "Confirmee";
+                break;
+        }
+        randomBien.reservations.push(Reservation.createRandomReservation(etat));
+    }
+
     // 3. Return result
     return randomBien;
 }

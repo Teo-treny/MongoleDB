@@ -1,4 +1,4 @@
-const Reservation = require('../noSqlModels/reservation');
+const Bien = require('../noSqlModels/bien');
 
 /**
  * Create <iteration> documents in the NoSqlDB
@@ -8,9 +8,7 @@ function createTestSetNoSql(iteration) {
     clearTestSetNoSql();
     console.log("--> Creating test set of " + iteration + " documents");
 
-    // for (let i = 0; i < iteration; i++) {
-    // }
-
+    console.log(Bien.createRandomBien(2, 2));
 }
 
 /**

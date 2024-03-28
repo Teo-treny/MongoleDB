@@ -74,6 +74,7 @@ function createReservation(dateDebut, dateFin, tarifQuotidien, montantTotal, dat
     return reservation;
 }
 
+// TODO : Les réservations peuvent se superposer, il faut éviter que ça soit le cas !!!
 /**
  * Create a random reservation.
  * @param {String} etat 

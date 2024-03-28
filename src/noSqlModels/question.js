@@ -58,7 +58,7 @@ function createRandomQuestion(linkedQuestions=[]) {
     randomQuestion = createQuestion(
         new ObjectId(),
         linkedQuestions,
-        tags,
+        [],
         fakerator().lorem.sentence() 
     );
 
