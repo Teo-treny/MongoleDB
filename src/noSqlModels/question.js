@@ -17,7 +17,7 @@ QuestionModel = database.model('Question', questionSchema);
  * @param {ObjectId} idAuteur 
  * @param {QuestionModel} linkedQuestions 
  * @param {String} texte 
- * @returns QuestionModel
+ * @returns {QuestionModel}
  */
 function createQuestion(idAuteur, linkedQuestions, texte) {
 
@@ -40,7 +40,7 @@ function createQuestion(idAuteur, linkedQuestions, texte) {
 /**
  * Create a random question. You can provide an idSource to link the question to another. Otherwise, it will be independant and the idSource attribute will be null.
  * @param {QuestionModel} linkedQuestions 
- * @returns 
+ * @returns {QuestionModel}
  */
 function createRandomQuestion(linkedQuestions) {
     
