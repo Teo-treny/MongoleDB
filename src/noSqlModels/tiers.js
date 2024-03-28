@@ -1,8 +1,9 @@
 const database = require('../services/database.service');
 const fakerator = require('fakerator')("fr-FR");
+const Question = require('./question');
+const Reservation = require('./reservation');
 
 const tierSchema = new database.Schema({
-    // idTiers: { type: database.Schema.Types.ObjectId, required: true },
     nomTiers: { type: String },
     prenomTiers: { type: String },
     mailTiers: { type: String },

@@ -2,7 +2,6 @@
 const { ObjectId } = require('mongodb');
 const database = require('../services/database.service');
 const fakerator = require('fakerator');
-const Tier = require('./tiers');
 
 const reservationSchema = new database.Schema({
     dateDebut: { type: Date },
