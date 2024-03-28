@@ -11,8 +11,6 @@ function createTestSetNoSql(iteration) {
     // for (let i = 0; i < iteration; i++) {
     // }
 
-    Reservation.createRandomReservation();
-
 }
 
 /**

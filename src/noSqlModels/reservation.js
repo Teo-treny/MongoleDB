@@ -31,6 +31,18 @@ function addDays(date, days) {
 }
 
 /**
+ * Calculates the number of days between two dates
+ * @param {Date} date1 
+ * @param {Date} date2 
+ * @returns {Number}
+ */
+function daysBetween(date1, date2) {
+    let diffInTime = date2.getTime() - date1.getTime();
+    let diffInDays = Math.round(diffInTime / (1000 * 3600 * 24));
+    return diffInDays;
+}
+
+/**
  * Creates a reservation
  * @param {Date} dateDebut 
  * @param {Date} dateFin 
@@ -62,25 +74,64 @@ function createReservation(dateDebut, dateFin, tarifQuotidien, montantTotal, dat
     return reservation;
 }
 
-
+/**
+ * Create a random reservation.
+ * @param {String} etat 
+ * @returns {ReservationModel}
+ */
 function createRandomReservation(etat = "Terminee") {
-    // 3 Cas
-    // 1 -> Reservation terminée (now > datefin et payée)
-    // 2 -> Reservation confirmée (now < datedebut et payée)
-    // 3 -> Reservation en cours (now > datedebut et now < datefin et payée)
+    // 3 Cases
+    // 1 -> Reservation ended (now > datefin & payed)
+    // 2 -> Reservation confirmed (now > datedebut & payed)
+    // 3 -> Reservation in progress (now > datedebut & now < datefin & payed)
 
-    // Cas 1 -> Reservation terminée
-    if (etat = "Terminee") {
-        // Completement arbitraire, deal with it boys
-        dateDebut = fakerator().date.between(new Date(2020, 1, 1), new Date(2024, 2, 15));
-        dateFin = addDays(dateDebut, fakerator().random.number(1, 10));
+    // Deal with it boys
+    dateMin = new Date(2020, 1, 1);
+    dateMax = new Date(2024, 2, 15);
 
-        
+    // Switch on state to fix dates
+    switch(etat) {
+        // Case 1 (and default) -> Reservation ended
+        default:
+        case 'Terminee':
+            dateDebut = fakerator().date.between(dateMin, dateMax);
+            dateFin = addDays(dateDebut, fakerator().random.number(1, 10));
+            break;
+
+        // Case 2 -> Reservation confirmed
+        case 'Confirmee':
+            dateDebut = fakerator().date.recent(5);
+            dateFin = addDays(Date.now(), fakerator().random.number(1, 10));
+            break;
+
+        // Case 3 -> Reservation in progress
+        case 'En cours':
+            dateDebut = addDays(Date.now(), (-1) * fakerator().random.number(1, 10));
+            dateFin = addDays(Date.now(), fakerator().random.number(1, 10));
+            break;
     }
 
+    // Generate the other fields
+    dateReservation = fakerator().date.between(dateMin, dateDebut);
+    dateReglement = fakerator().date.between(dateDebut, dateReservation);
+    tarifQuotidien = fakerator().random.number(100, 1000);
+    montantTotal = tarifQuotidien * daysBetween(dateDebut, dateFin);
 
-    console.log(dateDebut);
-    console.log(dateFin);
+    // Create reservation
+    let randReservation = createReservation(
+        dateDebut,
+        dateFin,
+        tarifQuotidien,
+        montantTotal,
+        dateReservation,
+        dateReglement,
+        etat,
+        fakerator().lorem.sentence(),
+        fakerator().lorem.sentence()
+    );
+
+    // Return result
+    return randReservation;
 }
 
 module.exports = {ReservationModel, createRandomReservation};
