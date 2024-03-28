@@ -7,6 +7,9 @@ const questionSchema = new database.Schema({
     questions: {
         type: [this]
     },
+    tags: [{
+        type: String
+    }],
     texte: { type: String }
 });
 
@@ -15,11 +18,12 @@ QuestionModel = database.model('Question', questionSchema);
 /**
  * Creates a question
  * @param {ObjectId} idAuteur 
- * @param {QuestionModel} linkedQuestions 
+ * @param {QuestionModel[]} linkedQuestions 
+ * @param {String[]} tags
  * @param {String} texte 
  * @returns {QuestionModel}
  */
-function createQuestion(idAuteur, linkedQuestions, texte) {
+function createQuestion(idAuteur, linkedQuestions=[], tags=[], texte) {
 
     // Create a question
     let question = new QuestionModel({
@@ -28,28 +32,41 @@ function createQuestion(idAuteur, linkedQuestions, texte) {
     });
 
     // Add linked questions
-    if(linkedQuestions != null)
-        linkedQuestions.forEach(element => {
-            question.questions.push(element);
-        });
+    linkedQuestions.forEach(element => {
+        question.questions.push(element);
+    });
+
+    // Add tags
+    tags.forEach(element => {
+        question.tags.push(element);
+    });
 
     // Return result
     return question;
 }
 
 /**
- * Create a random question. You can provide an idSource to link the question to another. Otherwise, it will be independant and the idSource attribute will be null.
- * @param {QuestionModel} linkedQuestions 
+ * Create a random question.
+ * You can add other questions to link to the new question.
+ * You can add tags to the new question.
+ * @param {QuestionModel[]} linkedQuestions 
  * @returns {QuestionModel}
  */
-function createRandomQuestion(linkedQuestions) {
+function createRandomQuestion(linkedQuestions=[]) {
     
     // Create a random question
     randomQuestion = createQuestion(
-        new ObjectId(), 
-        linkedQuestions, 
-        fakerator().lorem.sentence());
+        new ObjectId(),
+        linkedQuestions,
+        tags,
+        fakerator().lorem.sentence() 
+    );
 
+    // Add tags to the question
+    for(let i = 0; i < fakerator().random.number(1, 3); i++) {
+        randomQuestion.tags.push('#'+fakerator().lorem.word());
+    }
+    
     // Return result
     return randomQuestion;
 }
