@@ -124,7 +124,7 @@ function createRandomBien(questionAmount, questionDepth) {
                 etat = "Confirmee";
                 break;
         }
-        randomBien.reservations.push(Reservation.createRandomReservation(etat));
+        randomBien.reservations.push(Reservation.createRandomReservation_incr(etat, i));
     }
 
     // 3. Return result

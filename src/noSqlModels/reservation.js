@@ -135,4 +135,59 @@ function createRandomReservation(etat = "Terminee") {
     return randReservation;
 }
 
-module.exports = {ReservationModel, createRandomReservation};
+function createRandomReservation_incr(etat = "Terminee", increment = 0) {
+    // 3 Cases
+    // 1 -> Reservation ended (now > datefin & payed)
+    // 2 -> Reservation confirmed (now > datedebut & payed)
+    // 3 -> Reservation in progress (now > datedebut & now < datefin & payed)
+
+    // Deal with it boys
+    dateMin = new Date(2020, 1, 1);
+    dateMax = new Date(2024, 2, 15);
+
+    // Switch on state to fix dates
+    switch(etat) {
+        // Case 1 (and default) -> Reservation ended
+        default:
+        case 'Terminee':
+            dateDebut = addDays(dateMin, increment);
+            dateFin = addDays(dateDebut, 1);
+            break;
+
+        // Case 2 -> Reservation confirmed
+        case 'Confirmee':
+            dateDebut = addDays(dateMin, increment);
+            dateFin = addDays(dateDebut, 1);
+            break;
+
+        // Case 3 -> Reservation in progress
+        case 'En cours':
+            dateDebut = addDays(dateMin, increment);
+            dateFin = addDays(dateDebut, 1);
+            break;
+    }
+
+    // Generate the other fields
+    dateReservation = fakerator().date.between(dateMin, dateDebut);
+    dateReglement = fakerator().date.between(dateDebut, dateReservation);
+    tarifQuotidien = fakerator().random.number(100, 1000);
+    montantTotal = tarifQuotidien * daysBetween(dateDebut, dateFin);
+
+    // Create reservation
+    let randReservation = createReservation(
+        dateDebut,
+        dateFin,
+        tarifQuotidien,
+        montantTotal,
+        dateReservation,
+        dateReglement,
+        etat,
+        fakerator().lorem.sentence(),
+        fakerator().lorem.sentence()
+    );
+
+    // Return result
+    return randReservation;
+}
+
+module.exports = {ReservationModel, createRandomReservation, createRandomReservation_incr};
