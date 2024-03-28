@@ -6,11 +6,32 @@ const Tiers = require('../noSqlModels/tiers');
  * @param {number} iteration 
  */
 function createTestSetNoSql(iteration) {
-    console.log("Creating test set of " + iteration + " documents");
+    clearTestSetNoSql();
+    console.log("--> Creating test set of " + iteration + " documents");
 
-    let bien = Bien.createRandomBien();
-    bien.save();
+    for (let i = 0; i < iteration; i++) {
+    }
 
+    let bien = Bien.createRandomBien(5,2);
+    console.log(bien);
+
+}
+
+/**
+ * Clear all documents from the NoSqlDB
+ */
+function clearTestSetNoSql() {
+    console.log("--> Clearing test set");
+    /*Bien.deleteMany({}, function (err) {
+        if (err) {
+            console.log(err);
+        }
+    });
+    Tiers.deleteMany({}, function (err) {
+        if (err) {
+            console.log(err);
+        }
+    });*/
 }
 
 module.exports = createTestSetNoSql;
