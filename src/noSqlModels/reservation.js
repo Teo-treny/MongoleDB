@@ -135,6 +135,12 @@ function createRandomReservation(etat = "Terminee") {
     return randReservation;
 }
 
+/**
+ * Create incremental reservation, avoiding superposition of dates when using createRandomReservation
+ * @param {String} etat
+ * @param {Number} increment
+ * @returns {ReservationModel}
+ */
 function createRandomReservation_incr(etat = "Terminee", increment = 0) {
     // 3 Cases
     // 1 -> Reservation ended (now > datefin & payed)
