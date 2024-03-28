@@ -4,11 +4,18 @@ const Bien = require('../noSqlModels/bien');
  * Create <iteration> documents in the NoSqlDB
  * @param {number} iteration 
  */
-function createTestSetNoSql(iteration) {
+async function createTestSetNoSql(iteration) {
     clearTestSetNoSql();
     console.log("--> Creating test set of " + iteration + " documents");
 
-    console.log(Bien.createRandomBien(2, 2));
+    try {
+        for (let i = 0; i < iteration; i++) {
+            bien = Bien.createRandomBien(5, 5);
+            await bien.save();
+        }
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 /**
