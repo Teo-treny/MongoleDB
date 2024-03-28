@@ -1,0 +1,589 @@
+-- MySQL dump 10.19  Distrib 10.3.39-MariaDB, for debian-linux-gnu (x86_64)
+--
+-- Host: 127.0.0.1    Database: BNB2I
+-- ------------------------------------------------------
+-- Server version	10.3.39-MariaDB-0ubuntu0.20.04.2
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `Biens`
+--
+
+DROP TABLE IF EXISTS `Biens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Biens` (
+  `ID_Bien` int(11) NOT NULL AUTO_INCREMENT,
+  `Adresse_bien` varchar(255) NOT NULL,
+  `CP_Bien` varchar(255) NOT NULL,
+  `Ville_bien` varchar(255) NOT NULL,
+  `Type_location` varchar(255) NOT NULL,
+  `Tarif_base` double NOT NULL,
+  PRIMARY KEY (`ID_Bien`)
+) ENGINE=InnoDB AUTO_INCREMENT=758 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Calendrier`
+--
+
+DROP TABLE IF EXISTS `Calendrier`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Calendrier` (
+  `Date` date NOT NULL,
+  `ID_Bien` int(11) NOT NULL AUTO_INCREMENT,
+  `Tarif_journalier` double NOT NULL,
+  `Etat` int(11) NOT NULL,
+  PRIMARY KEY (`ID_Bien`,`Date`),
+  CONSTRAINT `Calendrier_Biens_ID_Bien_fk` FOREIGN KEY (`ID_Bien`) REFERENCES `Biens` (`ID_Bien`)
+) ENGINE=InnoDB AUTO_INCREMENT=758 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Hashtag`
+--
+
+DROP TABLE IF EXISTS `Hashtag`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Hashtag` (
+  `idhashtag` int(11) NOT NULL AUTO_INCREMENT,
+  `hashtag` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`idhashtag`)
+) ENGINE=InnoDB AUTO_INCREMENT=26384 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Question_Hashtag`
+--
+
+DROP TABLE IF EXISTS `Question_Hashtag`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Question_Hashtag` (
+  `ID_Hashtag` int(11) NOT NULL,
+  `ID_Question` int(11) NOT NULL,
+  `Note` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID_Question`,`ID_Hashtag`),
+  KEY `table_name_Hashtag_idhashtag_fk` (`ID_Hashtag`),
+  CONSTRAINT `table_name_Hashtag_idhashtag_fk` FOREIGN KEY (`ID_Hashtag`) REFERENCES `Hashtag` (`idhashtag`),
+  CONSTRAINT `table_name_Questions_ID_Question_fk` FOREIGN KEY (`ID_Question`) REFERENCES `Questions` (`ID_Question`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Questions`
+--
+
+DROP TABLE IF EXISTS `Questions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Questions` (
+  `ID_Question` int(11) NOT NULL AUTO_INCREMENT,
+  `ID_Auteur` int(11) NOT NULL,
+  `ID_Bien` int(11) NOT NULL,
+  `ID_Source` int(11) DEFAULT NULL,
+  `Texte` longtext DEFAULT NULL,
+  PRIMARY KEY (`ID_Question`),
+  KEY `Questions_Biens_ID_Bien_fk` (`ID_Bien`),
+  KEY `Questions_Tiers_ID_Tiers_fk` (`ID_Auteur`),
+  KEY `Questions_Questions_ID_Question_fk` (`ID_Source`),
+  CONSTRAINT `Questions_Biens_ID_Bien_fk` FOREIGN KEY (`ID_Bien`) REFERENCES `Biens` (`ID_Bien`),
+  CONSTRAINT `Questions_Questions_ID_Question_fk` FOREIGN KEY (`ID_Source`) REFERENCES `Questions` (`ID_Question`) ON DELETE CASCADE,
+  CONSTRAINT `Questions_Tiers_ID_Tiers_fk` FOREIGN KEY (`ID_Auteur`) REFERENCES `Tiers` (`ID_Tiers`)
+) ENGINE=InnoDB AUTO_INCREMENT=33695 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Reservations`
+--
+
+DROP TABLE IF EXISTS `Reservations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Reservations` (
+  `ID_Reservation` int(11) NOT NULL AUTO_INCREMENT,
+  `ID_Bien` int(11) NOT NULL,
+  `ID_Tiers` int(11) DEFAULT NULL,
+  `Date_debut` datetime NOT NULL,
+  `Date_fin` datetime NOT NULL,
+  `Tarif_quotidien` double NOT NULL,
+  `Montant_total` double NOT NULL,
+  `Date_reservation` datetime NOT NULL,
+  `Date_reglement` datetime DEFAULT NULL,
+  `Etat` varchar(255) NOT NULL,
+  `ID_Commentaire` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID_Reservation`),
+  KEY `Reservations_Tiers_ID_Tiers_fk` (`ID_Tiers`),
+  KEY `Reservations__ID_Bien_fk` (`ID_Bien`),
+  KEY `Reservations_Questions_ID_Question_fk` (`ID_Commentaire`),
+  CONSTRAINT `Reservations_Questions_ID_Question_fk` FOREIGN KEY (`ID_Commentaire`) REFERENCES `Questions` (`ID_Question`),
+  CONSTRAINT `Reservations_Tiers_ID_Tiers_fk` FOREIGN KEY (`ID_Tiers`) REFERENCES `Tiers` (`ID_Tiers`),
+  CONSTRAINT `Reservations__ID_Bien_fk` FOREIGN KEY (`ID_Bien`) REFERENCES `Biens` (`ID_Bien`)
+) ENGINE=InnoDB AUTO_INCREMENT=15004 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50032 DROP TRIGGER IF EXISTS update_calendar */;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`admin`@`localhost`*/ /*!50003 TRIGGER update_calendar
+AFTER UPDATE ON Reservations
+FOR EACH ROW
+BEGIN
+    IF OLD.Etat = 'RESERVE' AND NEW.Etat = 'PAYE' THEN
+        UPDATE Calendrier
+        SET etat = 2
+        -- where date between date_debut and date_fin
+        WHERE Calendrier.ID_Bien = NEW.ID_Bien
+            AND date >= NEW.Date_debut AND date <= NEW.Date_fin;
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Table structure for table `Tiers`
+--
+
+DROP TABLE IF EXISTS `Tiers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Tiers` (
+  `ID_Tiers` int(11) NOT NULL AUTO_INCREMENT,
+  `Nom_tiers` varchar(255) NOT NULL,
+  `Prenom_tiers` varchar(255) NOT NULL,
+  `Mail_tiers` varchar(255) NOT NULL,
+  `MDP` varchar(255) NOT NULL,
+  `Type_tiers` varchar(255) NOT NULL,
+  PRIMARY KEY (`ID_Tiers`)
+) ENGINE=InnoDB AUTO_INCREMENT=279 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping routines for database 'BNB2I'
+--
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `CreationReservation` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`admin`@`localhost` PROCEDURE `CreationReservation`(IN nIdTier int, IN nIdBien int, IN dateStart date, IN dateEnd date)
+BEGIN
+    DECLARE tTypeTier VARCHAR(255);
+    DECLARE nDayBooked INT;
+    DECLARE dTarifQ DOUBLE;
+    DECLARE dTarifT DOUBLE;
+
+    SELECT Tiers.Type_tiers INTO tTypeTier FROM Tiers WHERE ID_Tiers = nIdTier;
+    IF tTypeTier <> 'LOCATAIRE' THEN
+        SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT  = 'Erreur - le tiers n est pas un locataire';
+    END IF;
+
+    IF dateStart > dateEnd OR dateStart < CURRENT_DATE THEN
+        SIGNAL SQLSTATE '45002' SET MESSAGE_TEXT  = 'Erreur - dates incorectes';
+    END IF;
+
+    SELECT COUNT(*) INTO nDayBooked FROM Calendrier WHERE ID_Bien = nIdBien AND Date >= dateStart AND Date <= dateEnd AND Etat != 0;
+    IF nDayBooked != 0 THEN
+        SIGNAL SQLSTATE '45003' SET MESSAGE_TEXT  = 'Erreur - le bien est déjà loué';
+    END IF;
+
+    SELECT AVG(Calendrier.Tarif_journalier), SUM(Tarif_journalier) INTO dTarifQ, dTarifT FROM Calendrier WHERE ID_Bien = nIdBien AND Date >= dateStart AND Date <= dateEnd;
+    INSERT INTO Reservations VALUE (NULL, nIdBien, nIdTier, dateStart, dateEnd, dTarifQ, dTarifT, CURRENT_DATE, NULL, 'RESERVE', NULL);
+    UPDATE Calendrier SET Etat = 1 WHERE ID_Bien = nIdBien AND Date >= dateStart AND Date <= dateEnd;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `InitAll` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`admin`@`localhost` PROCEDURE `InitAll`()
+BEGIN
+    DELETE FROM Question_Hashtag;
+    DELETE FROM  Reservations;
+    DELETE FROM Questions;
+    DELETE FROM Calendrier;
+    DELETE FROM  Biens;
+    DELETE FROM  Tiers;
+
+    CALL JeuTiers(25);
+    CALL JeuBiens(100);
+    CALL JeuReservation(5000);
+    CALL JeuQuestion();
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `InitCalendrier` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`admin`@`localhost` PROCEDURE `InitCalendrier`()
+BEGIN
+    DECLARE nIdBien INT;
+    DECLARE dTarif DOUBLE;
+    DECLARE nDays INT DEFAULT 0;
+    DECLARE bFin BOOLEAN DEFAULT FALSE;
+    DECLARE cBiens CURSOR FOR SELECT Biens.ID_Bien, Biens.Tarif_base FROM Biens;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET bFin = TRUE;
+
+    OPEN cBiens;
+
+    loopBien : LOOP
+        FETCH cBiens INTO nIdBien, dTarif;
+
+        IF bFin THEN
+            LEAVE loopBien;
+        END IF;
+
+        loopDate : REPEAT
+            INSERT INTO Calendrier VALUE (DATE_ADD(NOW(), INTERVAL nDays DAY), nIdBien, dTarif, 0);
+            SET nDays = nDays + 1;
+        UNTIL nDays > 1825
+        END REPEAT loopDate;
+
+        SET nDays = 0;
+    END LOOP loopBien;
+    CLOSE cBiens;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `JeuBiens` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`admin`@`localhost` PROCEDURE `JeuBiens`(IN nBien int)
+BEGIN
+    DECLARE nSet INT DEFAULT 1;
+
+    DECLARE nIdTier INT;
+
+    REPEAT
+
+        SELECT Tiers.ID_Tiers INTO nIdTier FROM Tiers ORDER BY RAND() LIMIT 1;
+
+        INSERT INTO Biens VALUE (NULL, CONCAT(nSet, ' rue Jean Souvraz'), '62300', 'Lens', 'COURT', ROUND(RAND()*1000));
+
+
+        SET nSet = nSet + 1;
+    UNTIL nSet > nBien
+    END REPEAT;
+
+    CALL InitCalendrier();
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `JeuQuestion` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`admin`@`localhost` PROCEDURE `JeuQuestion`()
+BEGIN
+    DECLARE nIdBien INT;
+    DECLARE bFin BOOLEAN DEFAULT FALSE;
+
+    DECLARE nSub1 INT DEFAULT 1;
+    DECLARE nMaxSub1 INT;
+    DECLARE nIdSub1 INT;
+
+    DECLARE nSub2 INT DEFAULT 1;
+    DECLARE nMaxSub2 INT;
+    DECLARE nIdSub2 INT;
+
+    DECLARE nSub3 INT DEFAULT 1;
+    DECLARE nMaxSub3 INT;
+    DECLARE nIdSub3 INT;
+
+    DECLARE nIdTier INT;
+
+    DECLARE nHastag INT DEFAULT 1;
+    DECLARE nMaxHastag INT;
+    DECLARE tHashtag VARCHAR(255);
+
+    DECLARE cBiens CURSOR FOR SELECT Biens.ID_Bien FROM Biens;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET bFin = TRUE;
+
+    OPEN cBiens;
+    loopBien : LOOP
+        FETCH cBiens INTO nIdBien;
+
+        IF bFin THEN
+            LEAVE loopBien;
+        END IF;
+
+        SET nMaxSub1 = ROUND(RAND()*5)+1;
+        REPEAT
+
+            SELECT ID_Tiers INTO nIdTier FROM Tiers ORDER BY RAND() LIMIT 1;
+
+            INSERT INTO Questions VALUE (NULL, nIdTier, nIdBien, NULL, CONCAT('1text', nSub1));
+            -- SET nIdSub1 = @@IDENTITY;
+            SELECT MAX(Questions.ID_Question) INTO nIdSub1 FROM Questions;
+            
+            SET nHastag = 0;
+            SET nMaxHastag = ROUND(RAND()*5)+1;
+            REPEAT
+                SELECT idhashtag INTO tHashtag FROM Hashtag ORDER BY RAND(RAND()) LIMIT 1;
+                IF (SELECT ID_Hashtag FROM Question_Hashtag WHERE ID_Question = nIdSub1 AND ID_Hashtag = tHashtag) IS NULL THEN
+                    INSERT INTO Question_Hashtag VALUE (tHashtag, nIdSub1, NULL);
+                    SET nHastag = nHastag + 1;
+                END IF;
+            UNTIL nHastag > nMaxHastag
+            END REPEAT;
+
+            -- ****************************************************************************** --
+            SET nMaxSub2 = ROUND(RAND()*5)+1;
+            REPEAT
+
+                SELECT ID_Tiers INTO nIdTier FROM Tiers ORDER BY RAND() LIMIT 1;
+
+                INSERT INTO Questions VALUE (NULL, nIdTier, nIdBien, nIdSub1, CONCAT('2text', nSub2));
+                -- SET nIdSub2 = @@IDENTITY;
+                SELECT MAX(Questions.ID_Question) INTO nIdSub2 FROM Questions;
+                
+                SET nHastag = 0;
+                SET nMaxHastag = ROUND(RAND()*5)+1;
+                REPEAT
+                    SELECT idhashtag INTO tHashtag FROM Hashtag ORDER BY RAND(RAND()) LIMIT 1;
+                    IF (SELECT ID_Hashtag FROM Question_Hashtag WHERE ID_Question = nIdSub2 AND ID_Hashtag = tHashtag) IS NULL THEN
+                        INSERT INTO Question_Hashtag VALUE (tHashtag, nIdSub2, NULL);
+                        SET nHastag = nHastag + 1;
+                    END IF;
+                UNTIL nHastag > nMaxHastag
+                END REPEAT;
+
+                -- ******************************************************************************** --
+                SET nMaxSub3 = ROUND(RAND()*5)+1;
+                REPEAT
+
+                    SELECT ID_Tiers INTO nIdTier FROM Tiers ORDER BY RAND() LIMIT 1;
+
+                    INSERT INTO Questions VALUE (NULL, nIdTier, nIdBien, nIdSub2, CONCAT('3text', nSub3));
+                    -- SET nIdSub3 = @@IDENTITY;
+                    SELECT MAX(Questions.ID_Question) INTO nIdSub3 FROM Questions;
+                    
+                    SET nHastag = 0;
+                    SET nMaxHastag = ROUND(RAND()*5)+1;
+                    REPEAT
+                        SELECT idhashtag INTO tHashtag FROM Hashtag ORDER BY RAND(RAND()) LIMIT 1;
+                        IF (SELECT ID_Hashtag FROM Question_Hashtag WHERE ID_Question = nIdSub3 AND ID_Hashtag = tHashtag) IS NULL THEN
+                            INSERT INTO Question_Hashtag VALUE (tHashtag, nIdSub3, NULL);
+                            SET nHastag = nHastag + 1;
+                        END IF;
+                    UNTIL nHastag > nMaxHastag
+                    END REPEAT;
+
+                    SET nSub3 = nSub3 + 1;
+                UNTIL nSub3 > nMaxSub3
+                END REPEAT;
+
+                SET nSub3 = 1;
+
+                SET nSub2 = nSub2 + 1;
+            UNTIL nSub2 > nMaxSub2
+            END REPEAT;
+
+            SET nSub2 = 1;
+
+            SET nSub1 = nSub1 + 1;
+        UNTIL nSub1 > nMaxSub1
+        END REPEAT;
+
+        SET nSub1 = 1;
+
+    END LOOP loopBien;
+    CLOSE cBiens;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `JeuReservation` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`admin`@`localhost` PROCEDURE `JeuReservation`(IN nReservation int)
+BEGIN
+    DECLARE nSet INT DEFAULT 0;
+    DECLARE nIdCommentaire INT;
+    DECLARE nIdBien INT;
+    DECLARE nIdTier INT;
+    DECLARE dateStart DATE;
+    DECLARE dateEnd DATE;
+    DECLARE nIdReservation INT;
+    DECLARE nHastag INT DEFAULT 1;
+    DECLARE nMaxHastag INT;
+    DECLARE tHashtag VARCHAR(255);
+    DECLARE bReponse BOOLEAN DEFAULT FALSE;
+    DECLARE bDate BOOLEAN DEFAULT FALSE;
+
+    REPEAT
+
+        SELECT ID_Tiers INTO nIdTier FROM Tiers ORDER BY RAND() LIMIT 1;
+        SELECT ID_Bien INTO nIdBien FROM Biens ORDER BY RAND() LIMIT 1;
+
+        REPEAT
+
+            SELECT Date INTO dateStart FROM Calendrier WHERE ID_Bien = nIdBien AND Etat = 0 ORDER BY RAND(RAND()) LIMIT 1;
+            SET dateEnd = DATE_ADD(dateStart, INTERVAL 1 DAY);
+
+            IF (SELECT Etat FROM Calendrier WHERE ID_Bien = nIdBien AND Date = dateEnd) = 0 THEN
+                SET bDate = TRUE;
+            END IF;
+        UNTIL bDate = TRUE
+        END REPEAT;
+
+        SET bDate = FALSE;
+
+        CALL CreationReservation(nIdTier, nIdBien, dateStart, dateEnd);
+
+        UPDATE Reservations SET Etat = 'PAYE' WHERE ID_Reservation = nIdReservation;
+        UPDATE Reservations SET Etat = 'TERMINE' WHERE ID_Reservation = nIdReservation;
+
+        INSERT INTO Questions VALUE (NULL, nIdTier, nIdBien, NULL, CONCAT('text', nSet));
+        SELECT MAX(ID_Question) INTO nIdCommentaire FROM Questions;
+
+        SELECT MAX(ID_Reservation) INTO nIdReservation FROM Reservations;
+        UPDATE Reservations SET ID_Commentaire = nIdCommentaire WHERE ID_Reservation = nIdReservation;
+
+        SET nMaxHastag = ROUND(RAND()*5);
+        REPEAT
+            SELECT idhashtag INTO tHashtag FROM Hashtag ORDER BY RAND() LIMIT 1;
+            INSERT INTO Question_Hashtag VALUE (tHashtag, nIdCommentaire, ROUND(RAND(RAND())*5));
+            SET nHastag = nHastag + 1;
+        UNTIL nHastag > nMaxHastag
+        END REPEAT;
+        
+        IF bReponse THEN
+            INSERT INTO Questions VALUE (NULL, nIdTier, nIdBien, nIdCommentaire, 'text');
+            SET bReponse = FALSE;
+        ELSE
+            SET bReponse = TRUE;
+        END IF;
+
+        SET nSet = nSet + 1;
+    UNTIL nSet > nReservation
+    END REPEAT;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `JeuTiers` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`admin`@`localhost` PROCEDURE `JeuTiers`(IN nTier int)
+BEGIN
+
+    DECLARE nSet INT DEFAULT 1;
+
+    DECLARE tNom VARCHAR(255);
+    DECLARE tPrenom VARCHAR(255);
+
+    REPEAT
+
+        SET tNom = CONCAT('Prevost', nSet);
+        SET tPrenom = CONCAT('Urban', nSet);
+        INSERT INTO Tiers VALUE (NULL, tNom, tPrenom, CONCAT(tPrenom, '.', tNom, '@gmail.com'), nSet, 'LOCATAIRE');
+
+        SET nSet = nSet + 1;
+
+    UNTIL nSet > nTier
+    END REPEAT;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2024-03-28 10:52:02
