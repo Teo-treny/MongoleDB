@@ -14,6 +14,7 @@ const questionSchema = new database.Schema({
 });
 
 QuestionModel = database.model('Question', questionSchema);
+QuestionModel.questionSchema = questionSchema;
 
 /**
  * Creates a question

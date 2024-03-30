@@ -16,6 +16,7 @@ const reservationSchema = new database.Schema({
 });
 
 ReservationModel = database.model('Reservation', reservationSchema);
+ReservationModel.reservationSchema = reservationSchema;
 
 /**
  * Adds days to a date

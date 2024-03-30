@@ -18,6 +18,7 @@ const bienSchema = new database.Schema({
 });
 
 BienModel = database.model('Bien', bienSchema);
+BienModel.bienSchema = bienSchema;
 
 /**
  * Creates a bien

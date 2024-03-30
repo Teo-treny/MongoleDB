@@ -17,11 +17,14 @@ switch (process.argv[2]) {
         break;
 
     case 'wipe':
-        scripts.clearTestSetNoSql();
+        scripts.clearTestSetNoSql().then(() => {
+            console.log("Test set cleared");
+            process.exit(0);
+        });
         break;
 
     default:   
         console.log('No script found, use either create or wipe\n-> npm run create <document amount>\n-> npm run wipe');
         break;
 }
-process.exit(0);
+// process.exit(0);
