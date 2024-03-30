@@ -27,4 +27,4 @@ switch (process.argv[2]) {
         console.log('No script found, use either create or wipe\n-> npm run create <document amount>\n-> npm run wipe');
         break;
 }
-// process.exit(0);
+process.exit(0);
