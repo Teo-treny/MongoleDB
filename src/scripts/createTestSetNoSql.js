@@ -5,9 +5,7 @@ const Bien = require('../noSqlModels/bien');
  * @param {number} iteration 
  */
 async function createTestSetNoSql(iteration) {
-    clearTestSetNoSql();
-    console.log("--> Creating test set of " + iteration + " documents");
-
+    console.log("\t--> Creating test set of " + iteration + " documents");
     try {
         for (let i = 0; i < iteration; i++) {
             bien = Bien.createRandomBien(5, 5);
@@ -22,7 +20,7 @@ async function createTestSetNoSql(iteration) {
  * Clear all documents from the NoSqlDB
  */
 function clearTestSetNoSql() {
-    console.log("--> Clearing test set");
+    console.log("\t--> Clearing test set");
     /*Bien.deleteMany({}, function (err) {
         if (err) {
             console.log(err);
@@ -35,4 +33,4 @@ function clearTestSetNoSql() {
     });*/
 }
 
-module.exports = createTestSetNoSql;
+module.exports = {createTestSetNoSql, clearTestSetNoSql};

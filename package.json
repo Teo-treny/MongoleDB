@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./src/index.js",
+    "create": "node ./src/index.js create",
+    "wipe": "node ./src/index.js wipe",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
