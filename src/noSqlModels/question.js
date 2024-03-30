@@ -8,7 +8,8 @@ const questionSchema = new database.Schema({
         type: [this]
     },
     tags: [{
-        type: String
+        tag: { type: String },
+        note: { type: Number }
     }],
     texte: { type: String }
 });
@@ -64,9 +65,11 @@ function createRandomQuestion(linkedQuestions=[]) {
     );
 
     // Add tags to the question
-    for(let i = 0; i < fakerator().random.number(1, 3); i++) {
-        randomQuestion.tags.push('#'+fakerator().lorem.word());
-    }
+    for(let i = 0; i < fakerator().random.number(1, 3); i++)
+        randomQuestion.tags.push({
+            tag: '#'+fakerator().lorem.word(),
+            note: fakerator().random.number(0, 5)
+        });
     
     // Return result
     return randomQuestion;
