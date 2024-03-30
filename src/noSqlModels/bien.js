@@ -1,7 +1,6 @@
 const database = require('../services/database.service');
 const Question = require('./question');
 const Reservation = require('./reservation');
-const Calendrier = require('./calendrier');
 const fakerator = require('fakerator')("fr-FR");
 
 const bienSchema = new database.Schema({
@@ -15,9 +14,6 @@ const bienSchema = new database.Schema({
     },
     reservations: {
         type: [Reservation.ReservationModel.reservationSchema]
-    },
-    calendriers: {
-        type: [Calendrier.CalendrierModel.calendrierSchema]
     }
 });
 
@@ -35,7 +31,7 @@ BienModel = database.model('Bien', bienSchema);
  * @param {CalendrierModel[]} calendriers 
  * @returns 
  */
-function createBien(adresseBien, cpBien, villeBien, typeLocation, tarifBase, questions, reservations, calendriers) {
+function createBien(adresseBien, cpBien, villeBien, typeLocation, tarifBase, questions, reservations) {
     
     // Create a bien
     let bien = new BienModel({
@@ -52,9 +48,6 @@ function createBien(adresseBien, cpBien, villeBien, typeLocation, tarifBase, que
     });
     reservations.forEach(element => {
         bien.reservations.push(element);
-    });
-    calendriers.forEach(element => {
-        bien.calendriers.push(element);
     });
 
     // Return result
@@ -101,7 +94,6 @@ function createRandomBien(questionAmount, questionDepth) {
         fakerator.address.city(), 
         fakerator.random.boolean() ? "Location" : "Vente", 
         fakerator.random.number(),
-        [],
         [],
         []
     );
